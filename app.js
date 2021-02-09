@@ -31,7 +31,7 @@ function createPost(body, cb) {
     console.log('error');
   });
 
-  xhr.send(JSON.stringify(body)); 
+  xhr.send(JSON.stringify(body));
 }
 
 function http({ method, url, body } = {}, cb) {
@@ -79,3 +79,88 @@ btnAddPost.addEventListener('click', e => {
     container.insertAdjacentElement('afterbegin', card);
   });
 });
+
+function myHttpRequest({ method, url } = {}, cb) {
+  try {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.addEventListener('load', () => {
+      if (Math.floor(xhr.status / 100) !== 2) {
+        cb("`Error. Status code: ${xhr.status}`, xhr")
+        return
+      }
+      const response = JSON.parse(xhr.responseText);
+      cb(response);
+    });
+
+    xhr.addEventListener('error', () => {
+      console.log('error');
+    });
+
+    xhr.send();
+  } catch (error) {
+    cb(error);
+  }
+}
+myHttpRequest(
+  {
+    method: "Get",
+    url: "https://jsonplaceholder.typicode.com/posts",
+  },
+  (err, res) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.log(res);
+  },
+);
+
+function http() {
+  return {
+    get(url, cb) {
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("Get", url);
+        xhr.addEventListener('load', () => {
+          if (Math.floor(xhr.status / 100) !== 2) {
+            cb("`Error. Status code: ${xhr.status}`, xhr")
+            return
+          }
+          const response = JSON.parse(xhr.responseText);
+          cb(response);
+        });
+
+        xhr.addEventListener('error', () => {
+          console.log('error');
+        });
+
+        xhr.send();
+      } catch (error) {
+        cb(error);
+      }
+    },
+    post(url, body, headers, cb) {
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("Post", url);
+        xhr.addEventListener('load', () => {
+          if (Math.floor(xhr.status / 100) !== 2) {
+            cb("`Error. Status code: ${xhr.status}`, xhr")
+            return
+          }
+          const response = JSON.parse(xhr.responseText);
+          cb(response);
+        });
+
+        xhr.addEventListener('error', () => {
+          console.log('error');
+        });
+
+        xhr.send(JSON.stringify);
+      } catch (error) {
+        cb(error);
+      }
+    }
+  }
+}
